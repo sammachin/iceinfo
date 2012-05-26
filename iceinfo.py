@@ -68,15 +68,15 @@ class register(object):
 		r = twiml.Response()
 		r.say("First of all please record your name,")
 		r.record(action="/iceinfo/register/addname", maxLength=6, method="GET")
-		r.say("Name is posted")
-		r.redirect("/iceinfo/register/dob")
 		return str(r)
 	def addname(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		RecordingUrl = urllib.quote(cherrypy.request.params['RecordingUrl'])
 		update(msisdn, 'name', RecordingUrl)
-		print "NAME ADDED"
-		return "ok"
+		r = twiml.Response()
+		r.say("Thankyou")
+		r.redirect("/iceinfo/register/dob")
+		return str(r)
 	def dob(self, var=None, **params):
 		print "ASKING FOR DOB"
 		msisdn = urllib.quote(cherrypy.request.params['From'])
