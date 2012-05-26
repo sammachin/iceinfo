@@ -149,7 +149,7 @@ class start(object):
 			r.say("Ice info allows you to record information useful to your Doctors if you are admitted to hospital")
 		elif digit == "2":
 			r = twiml.Response()
-			r.redirect(action="/iceinfo/regsiter/start")
+			r.redirect(action="/iceinfo/register/start")
 		return str(r)
 	def mainmenu(self, var=None, **params):
 		callerid = urllib.quote(cherrypy.request.params['From'])
