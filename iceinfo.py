@@ -189,7 +189,7 @@ class patient(object):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		r = twiml.Response()
 		r.say("Do you take any medicines you want to record? This could include any tablets, eye drops, injected medicines, inhalers or creams you use.  ICE Info will ask you for the drug name, spelling, dose and how often you take the medication so it may be useful for you to have the boxes in front of you. Press 1 to add a medication or press 2 to skip to the next section")
-		r.gather(action="/iceinfo/patient/hasdrug", numDigits=1, method="GET")
+		r.gather(action="/iceinfo/patient/hasdrugs", numDigits=1, method="GET")
 		return str(r)
 	def hasdrugs(self, var=None, **params):
 		callerid = urllib.quote(cherrypy.request.params['From'])
