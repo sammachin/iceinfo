@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 import pymongo
 
 conn = pymongo.Connection()
