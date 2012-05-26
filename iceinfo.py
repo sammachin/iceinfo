@@ -116,7 +116,7 @@ class clinician(object):
 		digits = urllib.quote(cherrypy.request.params['digits'])
 		if digits == "1":
 			r = twiml.Response()
-			r.redirect(action="/iceinfo/clinician/history")
+			r.redirect("/iceinfo/clinician/history")
 		elif digits == "2":
 			r = twiml.Response()
 			r.play(find(msisdn, 'name'))
@@ -151,17 +151,17 @@ class start(object):
 			print "SENDING REDIRECT"
 			r = twiml.Response()
 			r.say("Thankyou")
-			r.redirect(action="/iceinfo/register/start")
+			r.redirect("/iceinfo/register/start")
 		return str(r)
 	def mainmenu(self, var=None, **params):
 		callerid = urllib.quote(cherrypy.request.params['From'])
 		digit = urllib.quote(cherrypy.request.params['Digits'])
 		if digit == "1":
 			r = twiml.Response()
-			r.redirect(action="/iceinfo/clinician/start")
+			r.redirect("/iceinfo/clinician/start")
 		elif digit == "2":
 			r = twiml.Response()
-			r.redirect(action="/iceinfo/patient/start")
+			r.redirect("/iceinfo/patient/start")
 		return str(r)
 	mainmenu.exposed = True
 	start.exposed = True
