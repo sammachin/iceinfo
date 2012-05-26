@@ -117,6 +117,24 @@ class register(object):
 	
 
 class patient(object):
+	def start(self, var=None, **params):
+		callerid = urllib.quote(cherrypy.request.params['From'])
+		r = twiml.Response()
+		r.say("Press 1 if you want to add an item to your record. Press 2 if you want to review your record")
+		r.gather(action="/iceinfo/patient/menu", numDigits=1, method="GET")
+		return str(r)
+	def menu(self, var=None, **params):
+		callerid = urllib.quote(cherrypy.request.params['From'])
+		digit = urllib.quote(cherrypy.request.params['Digits'])
+		if digit == "1":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/startcondition")
+		elif digit == "2":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/playbackcond")
+		return str(r)
 	def startcondition(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		r = twiml.Response()
@@ -167,12 +185,117 @@ class patient(object):
 		r.say("After the beep please give the name of your  medical condition, illness or operation. ")
 		r.record(action="/iceinfo/patient/addcondition", maxLength=15, method="GET")
 		return str(r)
+	def startdrugs(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		r = twiml.Response()
+		r.say("Do you take any medicines you want to record? This could include any tablets, eye drops, injected medicines, inhalers or creams you use.  ICE Info will ask you for the drug name, spelling, dose and how often you take the medication so it may be useful for you to have the boxes in front of you. Press 1 to add a medication or press 2 to skip to the next section")
+		r.gather(action="/iceinfo/patient/hasdrug", numDigits=1, method="GET")
+		return str(r)
+	def hasdrugs(self, var=None, **params):
+		callerid = urllib.quote(cherrypy.request.params['From'])
+		digit = urllib.quote(cherrypy.request.params['Digits'])
+		if digit == "1":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/askdrugname")
+		elif digit == "2":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/startalergy")
+		return str(r)
+	def askdrugname(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		r = twiml.Response()
+		r.say("After the beep please give the name of your medication. Say the name clearly")
+		r.record(action="/iceinfo/patient/adddrugname", maxLength=5, method="GET")
+		return str(r)
+	def adddrugname(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		RecordingUrl = urllib.quote(cherrypy.request.params['RecordingUrl'])
+		r = twiml.Response()
+		r.say("Drug names are often similar to each other and can be difficult to distinguish over the phone so after the bleep please spell the name of your first medication slowly and clearly")
+		r.record(action="/iceinfo/patient/adddrugspelling?drugname=" + RecordingUrl, maxLength=10, method="GET")
+		return str(r)
+	def adddrugspelling(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		RecordingUrl = urllib.quote(cherrypy.request.params['RecordingUrl'])
+		drugname = urllib.quote(cherrypy.request.params['drugname'])
+		r = twiml.Response()
+		r.say("After the next bleep please say the dose you take of your medication, please give as much detail as possible, for example 2 tablets each containing 5mg")
+		r.record(action="/iceinfo/patient/adddrugdose?drugname=" + drugname + "&drugspelling=" + RecordingUrl, maxLength=5, method="GET")
+		return str(r)
+	def adddrugdose(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		RecordingUrl = urllib.quote(cherrypy.request.params['RecordingUrl'])
+		drugname = urllib.quote(cherrypy.request.params['drugname'])
+		drugspelling = urllib.quote(cherrypy.request.params['drugspelling'])
+		r = twiml.Response()
+		r.say("After the next beep please say how often you take your first medication")
+		r.record(action="/iceinfo/patient/adddrugfreq?drugname=" + drugname + "&drugspelling=" + drugspelling + "&drugdose=" + RecordingUrl, maxLength=5, method="GET")
+		return str(r)
+	def adddrugfreq(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		drugfreq = urllib.quote(cherrypy.request.params['RecordingUrl'])
+		drugname = urllib.quote(cherrypy.request.params['drugname'])
+		drugspelling = urllib.quote(cherrypy.request.params['drugspelling'])
+		drugdose = urllib.quote(cherrypy.request.params['drugdose'])
+		drug = {}
+		drug['name'] = drugname
+		drug['spelling'] = drugspelling
+		drug['dose'] = drugdose
+		drug['freq'] = drugfreq
+		append(msisdn, 'drug', drug)
+		r = twiml.Response()
+		r.say("Thankyou, Press 1 to add another medication, Press 2 to skip to the next section")
+		r.gather(action="/iceinfo/patient/moredrugs", numDigits=1, method="GET")
+		return str(r)
+	def moredrugs(self, var=None, **params):
+		callerid = urllib.quote(cherrypy.request.params['From'])
+		digit = urllib.quote(cherrypy.request.params['Digits'])
+		if digit == "1":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/askdrugname")
+		elif digit == "2":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/startalergy")
+		return str(r)
+	def startalergy(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		r = twiml.Response()
+		r.say("Do you have any allergies you want to record? Press 1 to add an allergy or Press 2 to skip to the next section")
+		r.gather(action="/iceinfo/patient/hasalergy", numDigits=1, method="GET")
+		return str(r)
+	def hasalergy(self, var=None, **params):
+		callerid = urllib.quote(cherrypy.request.params['From'])
+		digit = urllib.quote(cherrypy.request.params['Digits'])
+		if digit == "1":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/askalergy")
+		elif digit == "2":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/startnok")
+		return str(r)
+	start.exposed = True
+	menu.exposed = True
 	startcondition.exposed = True
 	hascondition.exposed = True
 	askcondition.exposed = True
 	addcondition.exposed = True
 	morecondition.exposed = True
 	asknextcondition.exposed = True
+	startdrugs.exposed = True
+	hasdrugs.exposed = True
+	adddrugname.exposed = True
+	adddrugspelling.exposed = True
+	adddrugdose.exposed = True
+	adddrugfreq.exposed = True
+	moredrugs.exposed = True
+	startalergy.exposed = True
+	hasalergy.exposed = True
 	
 
 class clinician(object):		
