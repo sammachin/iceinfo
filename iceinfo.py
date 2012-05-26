@@ -90,7 +90,12 @@ class register(object):
 	dob.exposed = True
 	adddob.exposed = True
 
+	
 
+class patient(object):
+	def start(self, var=None, **params):
+		return "Patient"
+	start.exposed = True
 	
 
 class clinician(object):		
