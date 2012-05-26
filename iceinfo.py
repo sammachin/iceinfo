@@ -120,7 +120,7 @@ class patient(object):
 	def startcondition(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		r = twiml.Response()
-		r.say("Do you have any ongoing medical problems, previous illness or operations you want to record?  Press 1 to add a medical problem, illness or operation Press 2 to skip to the next section")
+		r.say("Do you have any ongoing medical problems, previous illness or operations you want to record?  Press 1 to add a medical problem, or Press 2 to skip to the next section")
 		r.gather(action="/iceinfo/patient/hascondition", numDigits=1, method="GET")
 		return str(r)
 	def hascondition(self, var=None, **params):
@@ -138,7 +138,7 @@ class patient(object):
 	def askcondition(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		r = twiml.Response()
-		r.say("After the beep please give the name of your 1st medical condition, illness or operation. Give the name clearly and briefly - if you don't know the correct name give a very brief description - for example gall bladder operation or  back pain.")
+		r.say("After the beep please give the name of your 1st  condition, Give the name clearly and briefly - if you don't know the correct name give a very brief description - for example gall bladder operation or  back pain.")
 		r.record(action="/iceinfo/patient/addcondition", maxLength=15, method="GET")
 		return str(r)
 	def addcondition(self, var=None, **params):
@@ -146,7 +146,7 @@ class patient(object):
 		RecordingUrl = urllib.quote(cherrypy.request.params['RecordingUrl'])
 		append(msisdn, 'cond', RecordingUrl)
 		r = twiml.Response()
-		r.say("Thankyou, Press 1 to add another medical condition, previous illness or operation, Press 2 to skip to the next section")
+		r.say("Thankyou, Press 1 to add another condition, Press 2 to skip to the next section")
 		r.gather(action="/iceinfo/patient/morecondition", numDigits=1, method="GET")
 		return str(r)
 	def morecondition(self, var=None, **params):
