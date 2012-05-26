@@ -67,7 +67,7 @@ class register(object):
 		users.insert(data)
 		r = twiml.Response()
 		r.say("First of all please record your name,")
-		r.record(action="/iceinfo/register/addname", maxLength=10, method="GET")
+		r.record(action="/iceinfo/register/addname", maxLength=6, method="GET")
 		r.redirect("/iceinfo/regsiter/dob")
 		return str(r)
 	def addname(self, var=None, **params):
@@ -78,7 +78,7 @@ class register(object):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		r = twiml.Response()
 		r.say("Thank you, now please tell me your date of birth,")
-		r.record(action="/iceinfo/register/adddob", maxLength=6, method="GET")
+		r.record(action="/iceinfo/register/adddob", maxLength=4, method="GET")
 		r.redirect("/iceinfo/regsiter/dob")
 		return str(r)
 	def adddob(self, var=None, **params):
