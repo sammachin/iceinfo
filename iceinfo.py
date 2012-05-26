@@ -279,6 +279,31 @@ class patient(object):
 			r.say("thankyou")
 			r.redirect("/iceinfo/patient/startnok")
 		return str(r)
+	def askalergy(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		r = twiml.Response()
+		r.say("After the beep please give the name of the drug, food or substance you are allergic to.")
+		r.record(action="/iceinfo/patient/addalergy", maxLength=10, method="GET")
+		return str(r)
+	def addalergy(seld, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		RecordingUrl = urllib.quote(cherrypy.request.params['RecordingUrl'])
+		r = twiml.Response()
+		r.say("After the beep give a very brief description of the reaction you have eee gee rash, nausea, facial swelling.")
+		r.record(action="/iceinfo/patient/addreaction?alergy=" + RecordingUrl, maxLength=10, method="GET")
+		return str(r)
+	def addreaction(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		reaction = urllib.quote(cherrypy.request.params['RecordingUrl'])
+		alergy = urllib.quote(cherrypy.request.params['alergy'])
+		alergy = {}
+		alergy['name'] = alergy
+		alergy['reaction'] = reaction
+		append(msisdn, 'alergy', alergy)
+		r = twiml.Response()
+		r.say("Thankyou, Press 1 to add another alergy, Press 2 to skip to the next section")
+		r.gather(action="/iceinfo/patient/moredrugs", numDigits=1, method="GET")
+		return str(r)
 	start.exposed = True
 	menu.exposed = True
 	startcondition.exposed = True
@@ -297,7 +322,9 @@ class patient(object):
 	moredrugs.exposed = True
 	startalergy.exposed = True
 	hasalergy.exposed = True
-	
+	askalergy.exposed = True
+	addalergy.exposed = True
+	addreaction.exposed = True
 
 class clinician(object):		
 	def start(self, var=None, **params):
