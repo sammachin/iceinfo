@@ -56,10 +56,11 @@ def find(msisdn, field):
 		
 def append(msisdn, field, value):
 	conn = pymongo.Connection()
-	db = conn.test
+	db = conn.iceinfo
 	users = db.users
+	countstr = field + "count"
 	res = users.find_one({'msisdn' : msisdn})
-	if res[field+"count"] == 0:
+	if res[countstr] == 0:
 		newvalue = []
 		newvalue.append(value)
 	else:
