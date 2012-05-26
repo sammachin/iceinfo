@@ -150,6 +150,7 @@ class start(object):
 		elif digit == "2":
 			print "SENDING REDIRECT"
 			r = twiml.Response()
+			r.say("Thankyou")
 			r.redirect(action="/iceinfo/register/start")
 		return str(r)
 	def mainmenu(self, var=None, **params):
