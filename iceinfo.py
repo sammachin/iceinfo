@@ -106,7 +106,7 @@ class register(object):
 		update(msisdn, 'nokcount', 0)
 		r = twiml.Response()
 		r.say("Thankyou")
-		r.redirect("/patient/startcondition")
+		r.redirect("/iceinfo/patient/startcondition")
 		return str(r)
 	start.exposed = True
 	addname.exposed = True
