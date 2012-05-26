@@ -74,8 +74,10 @@ class register(object):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		RecordingUrl = urllib.quote(cherrypy.request.params['RecordingUrl'])
 		update(msisdn, 'name', RecordingUrl)
+		print "NAME ADDED"
 		return "ok"
 	def dob(self, var=None, **params):
+		print "ASKING FOR DOB"
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		r = twiml.Response()
 		r.say("Thank you, now please tell me your date of birth,")
