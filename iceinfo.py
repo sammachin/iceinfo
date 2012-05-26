@@ -148,6 +148,7 @@ class start(object):
 			r = twiml.Response()
 			r.say("Ice info allows you to record information useful to your Doctors if you are admitted to hospital")
 		elif digit == "2":
+			print "SENDING REDIRECT"
 			r = twiml.Response()
 			r.redirect(action="/iceinfo/register/start")
 		return str(r)
