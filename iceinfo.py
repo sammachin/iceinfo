@@ -141,7 +141,7 @@ class start(object):
 			r.say("Welcome to Ice Info, This phone number is not yet registered, to learn more about the service press 1 or to get started press 2")
 			r.gather(action="/iceinfo/newuser", numDigits=1, method="GET")
 		return str(r)
-	def newuser(object):
+	def newuser(self, var=None, **params):
 		callerid = urllib.quote(cherrypy.request.params['From'])
 		digit = urllib.quote(cherrypy.request.params['Digits'])
 		if digit == "1":
@@ -151,7 +151,7 @@ class start(object):
 			r = twiml.Response()
 			r.redirect(action="/iceinfo/regsiter/start")
 		return str(r)
-	def mainmenu(object):
+	def mainmenu(self, var=None, **params):
 		callerid = urllib.quote(cherrypy.request.params['From'])
 		digit = urllib.quote(cherrypy.request.params['Digits'])
 		if digit == "1":
