@@ -68,6 +68,7 @@ class register(object):
 		r = twiml.Response()
 		r.say("First of all please record your name,")
 		r.record(action="/iceinfo/register/addname", maxLength=6, method="GET")
+		r.say("Name is posted")
 		r.redirect("/iceinfo/register/dob")
 		return str(r)
 	def addname(self, var=None, **params):
