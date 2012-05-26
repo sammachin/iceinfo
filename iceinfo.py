@@ -162,7 +162,7 @@ class clinician(object):
 cherrypy.config.update('app.cfg')
 app = cherrypy.tree.mount(start(), '/', 'app.cfg')
 cherrypy.config.update({'server.socket_host': '0.0.0.0',
-                        'server.socket_port': 9018})
+                        'server.socket_port': 9032})
 
 if hasattr(cherrypy.engine, "signal_handler"):
     cherrypy.engine.signal_handler.subscribe()
