@@ -67,7 +67,7 @@ class register(object):
 		users.insert(data)
 		r = twiml.Response()
 		r.say("First of all please record your name,")
-		r.record(action="/iceinfo/register/addname", maxLength=6, method="GET")
+		r.record(action="/iceinfo/register/addname", maxLength=5, method="GET")
 		return str(r)
 	def addname(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
@@ -81,15 +81,17 @@ class register(object):
 		print "ASKING FOR DOB"
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		r = twiml.Response()
-		r.say("Thank you, now please tell me your date of birth,")
-		r.record(action="/iceinfo/register/adddob", maxLength=4, method="GET")
-		r.redirect("/iceinfo/start")
+		r.say(" now please tell me your date of birth,")
+		r.record(action="/iceinfo/register/adddob", maxLength=5, method="GET")
 		return str(r)
 	def adddob(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		RecordingUrl = urllib.quote(cherrypy.request.params['RecordingUrl'])
 		update(msisdn, 'dob', RecordingUrl)
-		return "ok"
+		r = twiml.Response()
+		r.say("Thankyou")
+		r.redirect("/iceinfo/start")
+		return str(r)
 	start.exposed = True
 	addname.exposed = True
 	dob.exposed = True
