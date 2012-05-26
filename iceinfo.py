@@ -230,7 +230,7 @@ class patient(object):
 		drugname = urllib.quote(cherrypy.request.params['drugname'])
 		drugspelling = urllib.quote(cherrypy.request.params['drugspelling'])
 		r = twiml.Response()
-		r.say("After the next beep please say how often you take your first medication")
+		r.say("After the next beep please say how often you take your  medication")
 		r.record(action="/iceinfo/patient/adddrugfreq?drugname=" + drugname + "&drugspelling=" + drugspelling + "&drugdose=" + RecordingUrl, maxLength=5, method="GET")
 		return str(r)
 	def adddrugfreq(self, var=None, **params):
@@ -285,24 +285,96 @@ class patient(object):
 		r.say("After the beep please give the name of the drug, food or substance you are allergic to.")
 		r.record(action="/iceinfo/patient/addalergy", maxLength=10, method="GET")
 		return str(r)
-	def addalergy(seld, var=None, **params):
+	def addalergy(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		RecordingUrl = urllib.quote(cherrypy.request.params['RecordingUrl'])
 		r = twiml.Response()
-		r.say("After the beep give a very brief description of the reaction you have eee gee rash, nausea, facial swelling.")
+		r.say("After the beep give a very brief description of the reaction you have for example rash, nausea, facial swelling.")
 		r.record(action="/iceinfo/patient/addreaction?alergy=" + RecordingUrl, maxLength=10, method="GET")
 		return str(r)
 	def addreaction(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		reaction = urllib.quote(cherrypy.request.params['RecordingUrl'])
-		alergy = urllib.quote(cherrypy.request.params['alergy'])
+		name = urllib.quote(cherrypy.request.params['alergy'])
 		alergy = {}
-		alergy['name'] = alergy
+		alergy['name'] = name
 		alergy['reaction'] = reaction
 		append(msisdn, 'alergy', alergy)
 		r = twiml.Response()
 		r.say("Thankyou, Press 1 to add another alergy, Press 2 to skip to the next section")
-		r.gather(action="/iceinfo/patient/moredrugs", numDigits=1, method="GET")
+		r.gather(action="/iceinfo/patient/morealergy", numDigits=1, method="GET")
+		return str(r)
+	def morealergy(self, var=None, **params):
+		callerid = urllib.quote(cherrypy.request.params['From'])
+		digit = urllib.quote(cherrypy.request.params['Digits'])
+		if digit == "1":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/askalergy")
+		elif digit == "2":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/startnok")
+		return str(r)
+	def startnok(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		r = twiml.Response()
+		r.say("Do you wish to record a next-of-kin or emergency contact? In the event of an emergency ICE Info may be used to contact the people you enter in this section so only include people who you would want to be contacted  Press 1 to add a contact, or Press 2 to skip to the next section")
+		r.gather(action="/iceinfo/patient/hasnok", numDigits=1, method="GET")
+		return str(r)
+	def hasnok(self, var=None, **params):
+		callerid = urllib.quote(cherrypy.request.params['From'])
+		digit = urllib.quote(cherrypy.request.params['Digits'])
+		if digit == "1":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/asknok")
+		elif digit == "2":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/complete")
+		return str(r)
+	def asknok(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		r = twiml.Response()
+		r.say("After the beep say the name of your contact. ")
+		r.record(action="/iceinfo/patient/addnokname", maxLength=10, method="GET")
+		return str(r)
+	def addnokname(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		RecordingUrl = urllib.quote(cherrypy.request.params['RecordingUrl'])
+		r = twiml.Response()
+		r.say("After the beep key in the phone number for your contact")
+		r.gather(action="/iceinfo/patient/addnoknum?name=" + RecordingUrl, numDigits=11, method="GET")
+		return str(r)
+	def addnoknum(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		name = urllib.quote(cherrypy.request.params['name'])
+		number = urllib.quote(cherrypy.request.params['Digits'])
+		nok = {}
+		nok['name'] = name
+		nok['number'] = number
+		append(msisdn, 'nok', nok)
+		r = twiml.Response()
+		r.say("Thankyou, Press 1 to add another contact, Press 2 to skip to the next section")
+		r.gather(action="/iceinfo/patient/morenok", numDigits=1, method="GET")
+		return str(r)
+	def morenok(self, var=None, **params):
+		callerid = urllib.quote(cherrypy.request.params['From'])
+		digit = urllib.quote(cherrypy.request.params['Digits'])
+		if digit == "1":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/asknok")
+		elif digit == "2":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/complete")
+		return str(r)
+	def complete(self, var=None, **params):
+		r = twiml.Response()
+		r.say("Thank you for using ICE Info. Make sure ICE Info is saved in your phone address book so that healthcare workers can find and access your record in the event of an emergancy. You can phone the ICE Info number at any time to listen to, add to or delete any part of your entry.")
+		r.hangup()
 		return str(r)
 	start.exposed = True
 	menu.exposed = True
@@ -325,6 +397,11 @@ class patient(object):
 	askalergy.exposed = True
 	addalergy.exposed = True
 	addreaction.exposed = True
+	morealergy.exposed = True
+	startnok.exposed = True
+	
+	complete.exposed = True
+	
 
 class clinician(object):		
 	def start(self, var=None, **params):
