@@ -289,6 +289,7 @@ class patient(object):
 	asknextcondition.exposed = True
 	startdrugs.exposed = True
 	hasdrugs.exposed = True
+	askdrugname.exposed = True
 	adddrugname.exposed = True
 	adddrugspelling.exposed = True
 	adddrugdose.exposed = True
