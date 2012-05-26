@@ -113,10 +113,8 @@ class clinician(object):
 		r.play(find(msisdn, 'name'))
 		r.say("Date of Birth") 
 		r.play(find(msisnd, 'dob'))
-		r.say("This record was last checked and up-dated") 
-		r.say(updated(msisdn))
 		r.say("Press 1 to access the record or Press 2 to phone the patients next of kin")
-		r.gather(action="/iceinfo/clincian/menu", numDigits=1, method="GET")
+		r.gather(action="/iceinfo/clinician/menu", numDigits=1, method="GET")
 		return str(r)
 	def menu(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
