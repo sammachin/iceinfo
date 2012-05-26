@@ -54,7 +54,19 @@ def find(msisdn, field):
 	return data[field]
 
 		
-
+def append(msisdn, field, value):
+	conn = pymongo.Connection()
+	db = conn.test
+	users = db.users
+	res = users.find_one({'msisdn' : msisdn})
+	if res[field+"count"] == 0:
+		newvalue = []
+		newvalue.append(value)
+	else:
+		newvalue = res[field]
+		newvalue.append(value)
+	users.update( {'_id' : res['_id']}, { '$inc' : { field+"count" : 1 } })	
+	users.update( {'_id' : res['_id']}, { '$set' : { field : newvalue } })
 			
 
 class register(object):		
@@ -79,7 +91,6 @@ class register(object):
 		r.redirect("/iceinfo/register/dob")
 		return str(r)
 	def dob(self, var=None, **params):
-		print "ASKING FOR DOB"
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		r = twiml.Response()
 		r.say("Next record your date of birth. After the beep say your date of birth clearly")
@@ -89,9 +100,13 @@ class register(object):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		RecordingUrl = urllib.quote(cherrypy.request.params['RecordingUrl'])
 		update(msisdn, 'dob', RecordingUrl)
+		update(msisdn, 'condcount', 0)
+		update(msisdn, 'drugcount', 0)
+		update(msisdn, 'alergycount', 0)
+		update(msisdn, 'nokcount', 0)
 		r = twiml.Response()
 		r.say("Thankyou")
-		r.redirect("/iceinfo/start")
+		r.redirect("/patient/startcondition")
 		return str(r)
 	start.exposed = True
 	addname.exposed = True
@@ -101,9 +116,62 @@ class register(object):
 	
 
 class patient(object):
-	def start(self, var=None, **params):
-		return "Patient"
-	start.exposed = True
+	def startcondition(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		r = twiml.Response()
+		r.say("Do you have any ongoing medical problems, previous illness or operations you want to record?  Press 1 to add a medical problem, illness or operation Press 2 to skip to the next section")
+		r.gather(action="/iceinfo/patient/hascondition", numDigits=1, method="GET")
+		return str(r)
+	def hascondition(self, var=None, **params):
+		callerid = urllib.quote(cherrypy.request.params['From'])
+		digit = urllib.quote(cherrypy.request.params['Digits'])
+		if digit == "1":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/askcondition")
+		elif digit == "2":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/startdrugs")
+		return str(r)
+	def askcondition(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		r = twiml.Response()
+		r.say("After the beep please give the name of your 1st medical condition, illness or operation. Give the name clearly and briefly - if you don't know the correct name give a very brief description - for example gall bladder operation or  back pain.")
+		r.record(action="/iceinfo/patient/addcondition", maxLength=15, method="GET")
+		return str(r)
+	def addcondition(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		RecordingUrl = urllib.quote(cherrypy.request.params['RecordingUrl'])
+		append(msisdn, 'cond', RecordingUrl)
+		r = twiml.Response()
+		r.say("Thankyou, Press 1 to add another medical condition, previous illness or operation, Press 2 to skip to the next section")
+		r.gather(action="/iceinfo/patient/morecondition", numDigits=1, method="GET")
+		return str(r)
+	def morecondition(self, var=None, **params):
+		callerid = urllib.quote(cherrypy.request.params['From'])
+		digit = urllib.quote(cherrypy.request.params['Digits'])
+		if digit == "1":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/asknextcondition")
+		elif digit == "2":
+			r = twiml.Response()
+			r.say("thankyou")
+			r.redirect("/iceinfo/patient/startdrugs")
+		return str(r)	
+	def asknextcondition(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		r = twiml.Response()
+		r.say("After the beep please give the name of your  medical condition, illness or operation. ")
+		r.record(action="/iceinfo/patient/addcondition", maxLength=15, method="GET")
+		return str(r)
+	startcondition.exposed = True
+	hascondition.exposed = True
+	askcondition.exposed = True
+	addcondition.exposed = True
+	morecondition.exposed = True
+	asknextcondition.exposed = True
 	
 
 class clinician(object):		
