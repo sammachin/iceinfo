@@ -31,8 +31,8 @@ def sendsms(dest, msg):
 def registered(callerid):
 	conn = pymongo.Connection()
 	db = conn.iceinfo
-	numbers = db.users
-	data = numbers.find_one({"msisdn" : callerid})
+	users = db.users
+	data = users.find_one({"msisdn" : callerid})
 	if data:
 		return True
 	else:
