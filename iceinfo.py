@@ -54,44 +54,6 @@ def find(msisdn, field):
 
 		
 
-class start(object):
-	register = regsiter()
-	patient = patient()
-	clinician = clinician()
-	def start(self, var=None, **params):
-		callerid = urllib.quote(cherrypy.request.params['From'])
-		if registered(callerid):
-			r = twiml.Response()
-			r.say("Welcome to Ice Info, Press 1 if your are a clinician, Press 2 if you are the patient")
-			r.gather(action="/iceinfo/mainmenu", numDigits=1, method="GET")
-		else:
-			r = twiml.Response()
-			r.say("Welcome to Ice Info, This phone number is not yet registered, to learn more about the service press 1 or to get started press 2")
-			r.gather(action="/iceinfo/newuser", numDigits=1, method="GET")
-		return str(r)
-	def newuser(object):
-		callerid = urllib.quote(cherrypy.request.params['From'])
-		digit = urllib.quote(cherrypy.request.params['Digits'])
-		if digit == "1":
-			r = twiml.Response()
-			r.say("Ice info allows you to record information useful to your Doctors if you are admitted to hospital")
-		elif digit == "2":
-			r = twiml.Response()
-			r.redirect(action="/iceinfo/regsiter/start")
-		return str(r)
-	def mainmenu(object):
-		callerid = urllib.quote(cherrypy.request.params['From'])
-		digit = urllib.quote(cherrypy.request.params['Digits'])
-		if digit == "1":
-			r = twiml.Response()
-			r.redirect(action="/iceinfo/clinician/start")
-		elif digit == "2":
-			r = twiml.Response()
-			r.redirect(action="/iceinfo/patient/start")
-		return str(r)
-	mainmenu.exposed = True
-	start.exposed = True
-	newuser.exposed = True
 			
 
 class register(object):		
@@ -157,7 +119,46 @@ class clinician(object):
 			r.dial(number=str(",".join((find(msisdn, 'noks')))))
 		return str(r)
 								
-			
+
+
+class start(object):
+	register = register()
+	patient = patient()
+	clinician = clinician()
+	def start(self, var=None, **params):
+		callerid = urllib.quote(cherrypy.request.params['From'])
+		if registered(callerid):
+			r = twiml.Response()
+			r.say("Welcome to Ice Info, Press 1 if your are a clinician, Press 2 if you are the patient")
+			r.gather(action="/iceinfo/mainmenu", numDigits=1, method="GET")
+		else:
+			r = twiml.Response()
+			r.say("Welcome to Ice Info, This phone number is not yet registered, to learn more about the service press 1 or to get started press 2")
+			r.gather(action="/iceinfo/newuser", numDigits=1, method="GET")
+		return str(r)
+	def newuser(object):
+		callerid = urllib.quote(cherrypy.request.params['From'])
+		digit = urllib.quote(cherrypy.request.params['Digits'])
+		if digit == "1":
+			r = twiml.Response()
+			r.say("Ice info allows you to record information useful to your Doctors if you are admitted to hospital")
+		elif digit == "2":
+			r = twiml.Response()
+			r.redirect(action="/iceinfo/regsiter/start")
+		return str(r)
+	def mainmenu(object):
+		callerid = urllib.quote(cherrypy.request.params['From'])
+		digit = urllib.quote(cherrypy.request.params['Digits'])
+		if digit == "1":
+			r = twiml.Response()
+			r.redirect(action="/iceinfo/clinician/start")
+		elif digit == "2":
+			r = twiml.Response()
+			r.redirect(action="/iceinfo/patient/start")
+		return str(r)
+	mainmenu.exposed = True
+	start.exposed = True
+	newuser.exposed = True			
 			
 cherrypy.config.update('app.cfg')
 app = cherrypy.tree.mount(start(), '/', 'app.cfg')
