@@ -73,7 +73,7 @@ class register(object):
 	def addname(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		RecordingUrl = urllib.quote(cherrypy.request.params['RecordingUrl'])
-		update(msisdn, 'name', RecordingURL)
+		update(msisdn, 'name', RecordingUrl)
 	def dob(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		r = twiml.Response()
@@ -84,7 +84,7 @@ class register(object):
 	def adddob(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		RecordingUrl = urllib.quote(cherrypy.request.params['RecordingUrl'])
-		update(msisdn, 'dob', RecordingURL)
+		update(msisdn, 'dob', RecordingUrl)
 	start.exposed = True
 	addname.exposed = True
 	dob.exposed = True
