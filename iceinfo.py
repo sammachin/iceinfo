@@ -213,7 +213,7 @@ class patient(object):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		RecordingUrl = urllib.quote(cherrypy.request.params['RecordingUrl'])
 		r = twiml.Response()
-		r.say("Drug names are often similar to each other and can be difficult to distinguish over the phone so after the bleep please spell the name of your first medication slowly and clearly")
+		r.say("Drug names are often similar to each other and can be difficult to distinguish over the phone so after the bleep please spell the name of your medication slowly and clearly")
 		r.record(action="/iceinfo/patient/adddrugspelling?drugname=" + RecordingUrl, maxLength=10, method="GET")
 		return str(r)
 	def adddrugspelling(self, var=None, **params):
