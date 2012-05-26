@@ -12,6 +12,7 @@ from twilio import twiml
 from twilio.rest import TwilioRestClient
 import creds
 
+
 #Twilio Details
 account = creds.twilio_account
 token = creds.twilio_token
@@ -66,7 +67,7 @@ class register(object):
 		users = db.users
 		users.insert(data)
 		r = twiml.Response()
-		r.say("First of all please record your name,")
+		r.say("First record your name. After the beep say your name clearly")
 		r.record(action="/iceinfo/register/addname", maxLength=5, method="GET")
 		return str(r)
 	def addname(self, var=None, **params):
@@ -81,7 +82,7 @@ class register(object):
 		print "ASKING FOR DOB"
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		r = twiml.Response()
-		r.say(" now please tell me your date of birth,")
+		r.say("Next record your date of birth. After the beep say your date of birth clearly")
 		r.record(action="/iceinfo/register/adddob", maxLength=5, method="GET")
 		return str(r)
 	def adddob(self, var=None, **params):
@@ -139,23 +140,11 @@ class start(object):
 		callerid = urllib.quote(cherrypy.request.params['From'])
 		if registered(callerid):
 			r = twiml.Response()
-			r.say("Welcome to Ice Info, Press 1 if your are a clinician, Press 2 if you are the patient")
+			r.say("Welcome to ICE Info, Press 1 if you are a clinician and need to access a record, Press 2 if you are a patient and need to listen to,  add or delete a record")
 			r.gather(action="/iceinfo/mainmenu", numDigits=1, method="GET")
 		else:
 			r = twiml.Response()
-			r.say("Welcome to Ice Info, This phone number is not yet registered, to learn more about the service press 1 or to get started press 2")
-			r.gather(action="/iceinfo/newuser", numDigits=1, method="GET")
-		return str(r)
-	def newuser(self, var=None, **params):
-		callerid = urllib.quote(cherrypy.request.params['From'])
-		digit = urllib.quote(cherrypy.request.params['Digits'])
-		if digit == "1":
-			r = twiml.Response()
-			r.say("Ice info allows you to record information useful to your Doctors if you are admitted to hospital")
-		elif digit == "2":
-			print "SENDING REDIRECT"
-			r = twiml.Response()
-			r.say("Thankyou")
+			r.say("Welcome to ICE Info, Each ICE record is linked to a mobile phone number.  Once you've set up a record it will only be able to be accessed from this mobile. You can choose how much to include or not include on your record and who you allow to use your mobile phone. If you lose your phone you will need to contact your phone company to disable your phone and if you change your phone number you will need to delete your record first.")
 			r.redirect("/iceinfo/register/start")
 		return str(r)
 	def mainmenu(self, var=None, **params):
@@ -163,15 +152,16 @@ class start(object):
 		digit = urllib.quote(cherrypy.request.params['Digits'])
 		if digit == "1":
 			r = twiml.Response()
+			r.say("thankyou")
 			r.redirect("/iceinfo/clinician/start")
 		elif digit == "2":
 			r = twiml.Response()
+			r.say("thankyou")
 			r.redirect("/iceinfo/patient/start")
 		return str(r)
 	mainmenu.exposed = True
 	start.exposed = True
-	newuser.exposed = True			
-			
+				
 cherrypy.config.update('app.cfg')
 app = cherrypy.tree.mount(start(), '/', 'app.cfg')
 cherrypy.config.update({'server.socket_host': '0.0.0.0',
