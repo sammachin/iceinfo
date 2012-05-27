@@ -427,7 +427,7 @@ class clinician(object):
 		elif digits == "2":
 			r = twiml.Response()
 			r.play(urllib.unquote(find(msisdn, 'name')))
-			r.say("has registered" + str(len(find(msisdn, 'noks'))) + "contacts, ICE Info will now ring these contacts and connect you to the first to answer.")
+			r.say("has registered" + str(find(msisdn, 'nokcount')) + "contacts, ICE Info will now ring these contacts and connect you to the first to answer.")
 			num = ""
 			noks = find(msisdn, 'nok')
 			d = twilml.Dial(callerId="02033224232")
