@@ -430,9 +430,12 @@ class clinician(object):
 			r.say("has registered" + str(len(find(msisdn, 'noks'))) + "contacts, ICE Info will now ring these contacts and connect you to the first to answer.")
 			num = ""
 			noks = find(msisdn, 'nok')
+			d = twilml.Dial(callerId="02033224232")
 			for nok in noks:
 				num += nok['number']
-			r.dial(number=num)
+				n = twiml.Number(num)
+				d.append(n)
+			r.append(d)
 		return str(r)
 	def history(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
@@ -581,9 +584,12 @@ class clinician(object):
 		elif digit == "5":
 			num = ""
 			noks = find(msisdn, 'nok')
+			d = twilml.Dial(callerId="02033224232")
 			for nok in noks:
 				num += nok['number']
-			r.dial(number=num)
+				n = twiml.Number(num)
+				d.append(n)
+			r.append(d)
 		return str(r)
 	def completemenu(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
