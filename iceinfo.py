@@ -459,7 +459,7 @@ class clinician(object):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		item = int(urllib.quote(cherrypy.request.params['item']))
 		digit = urllib.quote(cherrypy.request.params['Digits'])
-		r.twiml.Response()
+		r = twiml.Response()
 		r.say('thankyou')
 		if digit == "1":
 			r.redirect("/iceinfo/clinician/playcond?item=" + str(item))
@@ -489,7 +489,7 @@ class clinician(object):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		item = int(urllib.quote(cherrypy.request.params['item']))
 		digit = urllib.quote(cherrypy.request.params['Digits'])
-		r.twiml.Response()
+		r = twiml.Response()
 		r.say('thankyou')
 		if digit == "1":
 			r.redirect("/iceinfo/clinician/playdrug?item=" + str(item))
@@ -517,7 +517,7 @@ class clinician(object):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		item = int(urllib.quote(cherrypy.request.params['item']))
 		digit = urllib.quote(cherrypy.request.params['Digits'])
-		r.twiml.Response()
+		r = twiml.Response()
 		r.say('thankyou')
 		if digit == "1":
 			r.redirect("/iceinfo/clinician/playalergy?item=" + str(item))
@@ -545,7 +545,7 @@ class clinician(object):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		item = int(urllib.quote(cherrypy.request.params['item']))
 		digit = urllib.quote(cherrypy.request.params['Digits'])
-		r.twiml.Response()
+		r = twiml.Response()
 		r.say('thankyou')
 		if digit == "1":
 			r.redirect("/iceinfo/clinician/playnok?item=" + str(item))
@@ -569,7 +569,7 @@ class clinician(object):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		item = int(urllib.quote(cherrypy.request.params['item']))
 		digit = urllib.quote(cherrypy.request.params['Digits'])
-		r.twiml.Response()
+		r = twiml.Response()
 		r.say('thankyou')
 		if digit == "1":
 			r.redirect("/iceinfo/clinician/start")
