@@ -534,7 +534,7 @@ class clinician(object):
 		r = twiml.Response()
 		r.play(noks[item]['name'])
 		r.say(noks[item]['number'])
-		if find(msisdn, 'nokcount')) == item +1:
+		if find(msisdn, 'nokcount') == item +1:
 			r.say("end of Next of Kin list")
 			r.say("Press 1 to replay this entry, Press 4 to phone this contact, Press 5 to phone all contacts and speak to the first to answer.")
 		else:
