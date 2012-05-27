@@ -430,7 +430,7 @@ class clinician(object):
 			r.say("has registered" + str(find(msisdn, 'nokcount')) + "contacts, ICE Info will now ring these contacts and connect you to the first to answer.")
 			num = ""
 			noks = find(msisdn, 'nok')
-			d = twilml.Dial(callerId="02033224232")
+			d = twiml.Dial(callerId="02033224232")
 			for nok in noks:
 				num += nok['number']
 				n = twiml.Number(num)
@@ -584,7 +584,7 @@ class clinician(object):
 		elif digit == "5":
 			num = ""
 			noks = find(msisdn, 'nok')
-			d = twilml.Dial(callerId="02033224232")
+			d = twiml.Dial(callerId="02033224232")
 			for nok in noks:
 				num += nok['number']
 				n = twiml.Number(num)
