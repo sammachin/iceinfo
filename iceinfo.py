@@ -445,14 +445,19 @@ class clinician(object):
 	def playcond(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		item = int(urllib.quote(cherrypy.request.params['item']))
-		conds = find(msisdn, 'cond')
-		r = twiml.Response()
-		r.play(urllib.unquote(conds[item]))
-		if find(msisdn, 'condcount') == item +1:
-			r.say("end of medical history")
-			r.say("Press 1 to replay this entry, Press 3 to move to the next section")
+		if find(msisdn, 'condcount') == 0:
+			r = twiml.Response()
+			r.say("There is no medical history")
+			r.say("Press 3 to move to the next section")
 		else:
-			r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section")
+			conds = find(msisdn, 'cond')
+			r = twiml.Response()
+			r.play(urllib.unquote(conds[item]))
+			if find(msisdn, 'condcount') == item +1:
+				r.say("end of medical history")
+				r.say("Press 1 to replay this entry, Press 3 to move to the next section")
+			else:
+				r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section")
 		r.gather(action="/iceinfo/clinician/condmenu?item=" + str(item), timeout=15, numDigits=1, method="GET")
 		return str(r)
 	def condmenu(self, var=None, **params):
@@ -472,17 +477,22 @@ class clinician(object):
 	def playdrug(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		item = int(urllib.quote(cherrypy.request.params['item']))
-		drugs = find(msisdn, 'drug')
-		r = twiml.Response()
-		r.play(urllib.unquote(drugs[item]['name']))
-		r.play(urllib.unquote(drugs[item]['spelling']))
-		r.play(urllib.unquote(drugs[item]['dose']))
-		r.play(urllib.unquote(drugs[item]['freq']))
-		if find(msisdn, 'drugcount') == item +1:
-			r.say("end of drug history")
-			r.say("Press 1 to replay this entry, Press 3 to move to the next section")
+		if find(msisdn, 'drugcount') == 0:
+			r = twiml.Response()
+			r.say("There is no drug history")
+			r.say("Press 3 to move to the next section")
 		else:
-			r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section")
+			drugs = find(msisdn, 'drug')
+			r = twiml.Response()
+			r.play(urllib.unquote(drugs[item]['name']))
+			r.play(urllib.unquote(drugs[item]['spelling']))
+			r.play(urllib.unquote(drugs[item]['dose']))
+			r.play(urllib.unquote(drugs[item]['freq']))
+			if find(msisdn, 'drugcount') == item +1:
+				r.say("end of drug history")
+				r.say("Press 1 to replay this entry, Press 3 to move to the next section")
+			else:
+				r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section")
 		r.gather(action="/iceinfo/clinician/drugmenu?item=" + str(item), numDigits=1, timeout=15, method="GET")
 		return str(r)
 	def drugmenu(self, var=None, **params):
@@ -502,15 +512,20 @@ class clinician(object):
 	def playalergy(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		item = int(urllib.quote(cherrypy.request.params['item']))
-		alergies = find(msisdn, 'alergy')
-		r = twiml.Response()
-		r.play(urllib.unquote(alergies[item]['name']))
-		r.play(urllib.unquote(alergies[item]['reaction']))
-		if find(msisdn, 'alergycount') == item +1:
-			r.say("end of alergy history")
-			r.say("Press 1 to replay this entry, Press 3 to move to the next section")
+		if find(msisdn, 'alergycount') == 0:
+			r = twiml.Response()
+			r.say("There is no alergy information")
+			r.say("Press 3 to move to the next section")
 		else:
-			r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section")
+			alergies = find(msisdn, 'alergy')
+			r = twiml.Response()
+			r.play(urllib.unquote(alergies[item]['name']))
+			r.play(urllib.unquote(alergies[item]['reaction']))
+			if find(msisdn, 'alergycount') == item +1:
+				r.say("end of alergy history")
+				r.say("Press 1 to replay this entry, Press 3 to move to the next section")
+			else:
+				r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section")
 		r.gather(action="/iceinfo/clinician/alergymenu?item=" + str(item), numDigits=1, timeout=15, method="GET")
 		return str(r)
 	def alergymenu(self, var=None, **params):
@@ -530,15 +545,20 @@ class clinician(object):
 	def playnok(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		item = int(urllib.quote(cherrypy.request.params['item']))
-		noks = find(msisdn, 'nok')
-		r = twiml.Response()
-		r.play(urllib.unquote(noks[item]['name']))
-		r.say(noks[item]['number'])
-		if find(msisdn, 'nokcount') == item +1:
-			r.say("end of Next of Kin list")
-			r.say("Press 1 to replay this entry, Press 4 to phone this contact, Press 5 to phone all contacts and speak to the first to answer.")
+		if find(msisdn, 'nokcount') == 0:
+			r = twiml.Response()
+			r.say("There are no Next of Kin details")
+			r.say("Press 3 to move to the next section")
 		else:
-			r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section, Press 4 to phone this contact, Press 5 to phone all contacts and speak to the first to answer.")
+			noks = find(msisdn, 'nok')
+			r = twiml.Response()
+			r.play(urllib.unquote(noks[item]['name']))
+			r.say(noks[item]['number'])
+			if find(msisdn, 'nokcount') == item +1:
+				r.say("end of Next of Kin list")
+				r.say("Press 1 to replay this entry, Press 4 to phone this contact, Press 5 to phone all contacts and speak to the first to answer.")
+			else:
+				r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section, Press 4 to phone this contact, Press 5 to phone all contacts and speak to the first to answer.")
 		r.gather(action="/iceinfo/clinician/nokmenu?item=" + str(item), numDigits=1, timeout=15, method="GET")
 		return str(r)
 	def nokmenu(self, var=None, **params):
