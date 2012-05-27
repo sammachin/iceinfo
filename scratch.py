@@ -23,7 +23,7 @@ def add(msisdn):
 	
 def append(msisdn, field, value):
 	conn = pymongo.Connection()
-	db = conn.test
+	db = conn.iceinfo
 	users = db.users
 	res = users.find_one({'msisdn' : msisdn})
 	if res[field+"count"] == 0:
@@ -39,7 +39,7 @@ def append(msisdn, field, value):
 
 def show():
 	conn = pymongo.Connection()
-	db = conn.test
+	db = conn.iceinfo
 	users = db.users
 	resp = users.find()
 	for user in resp:
@@ -54,9 +54,9 @@ def update(msisdn, field, value):
 		
 def find(msisdn, field):
 	conn = pymongo.Connection()
-	db = conn.test
-	numbers = db.numbers
-	data = numbers.find_one({'msisdn' : msisdn})
+	db = conn.iceinfo
+	users = db.users
+	data = users.find_one({'msisdn' : msisdn})
 	return data[field]
 	
 def drop():

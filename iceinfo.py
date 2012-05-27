@@ -399,7 +399,11 @@ class patient(object):
 	addreaction.exposed = True
 	morealergy.exposed = True
 	startnok.exposed = True
-	
+	hasnok.exposed = True
+	asknok.exposed = True
+	addnokname.exposed = True
+	addnoknum.exposed = True
+	morenok.exposed = True
 	complete.exposed = True
 	
 
@@ -410,7 +414,7 @@ class clinician(object):
 		r.say("You have accessed the ICE record for")
 		r.play(find(msisdn, 'name'))
 		r.say("Date of Birth") 
-		r.play(find(msisnd, 'dob'))
+		r.play(find(msisdn, 'dob'))
 		r.say("Press 1 to access the record or Press 2 to phone the patients next of kin")
 		r.gather(action="/iceinfo/clinician/menu", numDigits=1, method="GET")
 		return str(r)
@@ -424,9 +428,166 @@ class clinician(object):
 			r = twiml.Response()
 			r.play(find(msisdn, 'name'))
 			r.say("has registered" + str(len(find(msisdn, 'noks'))) + "contacts, ICE Info will now ring these contacts and connect you to the first to answer.")
-			r.dial(number=str(",".join((find(msisdn, 'noks')))))
+			num = ""
+			noks = find(msisdn, 'nok')
+			for nok in noks:
+				num += nok['number']
+			r.dial(number=num)
 		return str(r)
-								
+	def history(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		r = twiml.Response()
+		r.say("ICE Info will play back each entry on record for")
+		r.play(find(msisdn, 'name'))
+		r.say("Past Medical History: There are %s entries in this section" % find(msisdn, 'condcount'))
+		r.redirect("/iceinfo/clinician/playcond?item=0")
+		return str(r)
+	def playcond(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		item = int(urllib.quote(cherrypy.request.params['item']))
+		conds = find(msisdn, 'cond')
+		r = twiml.Response()
+		r.play(conds[item])
+		if find(msisdn, 'condcount') == item +1:
+			r.say("end of medical history")
+			r.say("Press 1 to replay this entry, Press 3 to move to the next section")
+		else:
+			r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section")
+		r.gather(action="/iceinfo/clinician/condmenu?item=" + item, numDigits=1, method="GET")
+		return str(r)
+	def condmenu(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		item = int(urllib.quote(cherrypy.request.params['item']))
+		digit = urllib.quote(cherrypy.request.params['Digits'])
+		r.twiml.Response()
+		r.say('thankyou')
+		if digit == "1":
+			r.redirect("/iceinfo/clinician/playcond?item=" + str(item))
+		elif digit == "2":
+			r.redirect("/iceinfo/clinician/playcond?item=" + str(item +1 ))
+		elif digit == "3":
+			r.say("Drug History: There are %s entries in this section" % find(msisdn, 'drugcount'))
+			r.redirect("/iceinfo/clinician/playdrug?item=0")
+		return str(r)
+	def playdrug(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		item = int(urllib.quote(cherrypy.request.params['item']))
+		drugs = find(msisdn, 'drug')
+		r = twiml.Response()
+		r.play(drugs[item]['name'])
+		r.play(drugs[item]['spelling'])
+		r.play(drugs[item]['dose'])
+		r.play(drugs[item]['freq'])
+		if find(msisdn, 'drugcount') == item +1:
+			r.say("end of drug history")
+			r.say("Press 1 to replay this entry, Press 3 to move to the next section")
+		else:
+			r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section")
+		r.gather(action="/iceinfo/clinician/drugmenu?item=" + item, numDigits=1, method="GET")
+		return str(r)
+	def drugmenu(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		item = int(urllib.quote(cherrypy.request.params['item']))
+		digit = urllib.quote(cherrypy.request.params['Digits'])
+		r.twiml.Response()
+		r.say('thankyou')
+		if digit == "1":
+			r.redirect("/iceinfo/clinician/playdrug?item=" + str(item))
+		elif digit == "2":
+			r.redirect("/iceinfo/clinician/playdrug?item=" + str(item +1 ))
+		elif digit == "3":
+			r.say("Alergies: There are %s entries in this section" % find(msisdn, 'alergycount'))
+			r.redirect("/iceinfo/clinician/playalergy?item=0")
+		return str(r)
+	def playalergy(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		item = int(urllib.quote(cherrypy.request.params['item']))
+		alergies = find(msisdn, 'alergy')
+		r = twiml.Response()
+		r.play(alergies[item]['name'])
+		r.play(alergies[item]['reaction'])
+		if find(msisdn, 'alergycount')) == item +1:
+			r.say("end of alergy history")
+			r.say("Press 1 to replay this entry, Press 3 to move to the next section")
+		else:
+			r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section")
+		r.gather(action="/iceinfo/clinician/alergymenu?item=" + item, numDigits=1, method="GET")
+		return str(r)
+	def alergymenu(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		item = int(urllib.quote(cherrypy.request.params['item']))
+		digit = urllib.quote(cherrypy.request.params['Digits'])
+		r.twiml.Response()
+		r.say('thankyou')
+		if digit == "1":
+			r.redirect("/iceinfo/clinician/playalergy?item=" + str(item))
+		elif digit == "2":
+			r.redirect("/iceinfo/clinician/playalergy?item=" + str(item +1 ))
+		elif digit == "3":
+			r.say("Next of Kin: There are %s entries in this section" % find(msisdn, 'nokcount'))
+			r.redirect("/iceinfo/clinician/playnok?item=0")
+		return str(r)
+	def playnok(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		item = int(urllib.quote(cherrypy.request.params['item']))
+		noks = find(msisdn, 'nok')
+		r = twiml.Response()
+		r.play(noks[item]['name'])
+		r.say(noks[item]['number'])
+		if find(msisdn, 'nokcount')) == item +1:
+			r.say("end of Next of Kin list")
+			r.say("Press 1 to replay this entry, Press 4 to phone this contact, Press 5 to phone all contacts and speak to the first to answer.")
+		else:
+			r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section, Press 4 to phone this contact, Press 5 to phone all contacts and speak to the first to answer.")
+		r.gather(action="/iceinfo/clinician/nokmenu?item=" + item, numDigits=1, method="GET")
+		return str(r)
+	def nokmenu(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		item = int(urllib.quote(cherrypy.request.params['item']))
+		digit = urllib.quote(cherrypy.request.params['Digits'])
+		r.twiml.Response()
+		r.say('thankyou')
+		if digit == "1":
+			r.redirect("/iceinfo/clinician/playnok?item=" + str(item))
+		elif digit == "2":
+			r.redirect("/iceinfo/clinician/playnok?item=" + str(item +1 ))
+		elif digit == "3":
+			r.say("You have reached the end of this entry. Press 1 to return to the beginning or hang up now.")
+			r.gather(action="/iceinfo/clinician/completemenu", numDigits=1, method="GET")
+		elif digit == "4":
+			noks = find(msisdn, 'nok')
+			num = noks[item]['number']
+			r.dial(number=num)
+		elif digit == "5":
+			num = ""
+			noks = find(msisdn, 'nok')
+			for nok in noks:
+				num += nok['number']
+			r.dial(number=num)
+		return str(r)
+	def completemenu(self, var=None, **params):
+		msisdn = urllib.quote(cherrypy.request.params['From'])
+		item = int(urllib.quote(cherrypy.request.params['item']))
+		digit = urllib.quote(cherrypy.request.params['Digits'])
+		r.twiml.Response()
+		r.say('thankyou')
+		if digit == "1":
+			r.redirect("/iceinfo/clinician/start")
+		else:
+			r.hangup()
+		return str(r)	
+	start.exposed = True
+	menu.exposed = True
+	history.exposed = True
+	playcond.exposed  = True
+	condmenu.exposed = True
+	playdrug.exposed = True
+	drugmenu.exposed = True
+	playalergy.exposed = True
+	alergymenu.exposed = True
+	playnok.exposed = True
+	nokmenu.exposed = True
+	completemenu.exposed = True
 
 
 class start(object):
