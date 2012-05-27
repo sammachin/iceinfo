@@ -121,7 +121,7 @@ class patient(object):
 		callerid = urllib.quote(cherrypy.request.params['From'])
 		r = twiml.Response()
 		r.say("Press 1 if you want to add an item to your record. Press 2 if you want to review your record")
-		r.gather(action="/iceinfo/patient/menu", numDigits=1, method="GET")
+		r.gather(action="/iceinfo/patient/menu", numDigits=1, timeout=15, method="GET")
 		return str(r)
 	def menu(self, var=None, **params):
 		callerid = urllib.quote(cherrypy.request.params['From'])
@@ -139,7 +139,7 @@ class patient(object):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		r = twiml.Response()
 		r.say("Do you have any ongoing medical problems, previous illness or operations you want to record?  Press 1 to add a medical problem, or Press 2 to skip to the next section")
-		r.gather(action="/iceinfo/patient/hascondition", numDigits=1, method="GET")
+		r.gather(action="/iceinfo/patient/hascondition", numDigits=1, timeout=15, method="GET")
 		return str(r)
 	def hascondition(self, var=None, **params):
 		callerid = urllib.quote(cherrypy.request.params['From'])
@@ -165,7 +165,7 @@ class patient(object):
 		append(msisdn, 'cond', RecordingUrl)
 		r = twiml.Response()
 		r.say("Thankyou, Press 1 to add another condition, Press 2 to skip to the next section")
-		r.gather(action="/iceinfo/patient/morecondition", numDigits=1, method="GET")
+		r.gather(action="/iceinfo/patient/morecondition", numDigits=1, timeout=15, method="GET")
 		return str(r)
 	def morecondition(self, var=None, **params):
 		callerid = urllib.quote(cherrypy.request.params['From'])
@@ -189,7 +189,7 @@ class patient(object):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		r = twiml.Response()
 		r.say("Do you take any medicines you want to record? This could include any tablets, eye drops, injected medicines, inhalers or creams you use.  ICE Info will ask you for the drug name, spelling, dose and how often you take the medication so it may be useful for you to have the boxes in front of you. Press 1 to add a medication or press 2 to skip to the next section")
-		r.gather(action="/iceinfo/patient/hasdrugs", numDigits=1, method="GET")
+		r.gather(action="/iceinfo/patient/hasdrugs", numDigits=1, timeout=15, method="GET")
 		return str(r)
 	def hasdrugs(self, var=None, **params):
 		callerid = urllib.quote(cherrypy.request.params['From'])
@@ -247,7 +247,7 @@ class patient(object):
 		append(msisdn, 'drug', drug)
 		r = twiml.Response()
 		r.say("Thankyou, Press 1 to add another medication, Press 2 to skip to the next section")
-		r.gather(action="/iceinfo/patient/moredrugs", numDigits=1, method="GET")
+		r.gather(action="/iceinfo/patient/moredrugs", numDigits=1, timeout=15, method="GET")
 		return str(r)
 	def moredrugs(self, var=None, **params):
 		callerid = urllib.quote(cherrypy.request.params['From'])
@@ -265,7 +265,7 @@ class patient(object):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		r = twiml.Response()
 		r.say("Do you have any allergies you want to record? Press 1 to add an allergy or Press 2 to skip to the next section")
-		r.gather(action="/iceinfo/patient/hasalergy", numDigits=1, method="GET")
+		r.gather(action="/iceinfo/patient/hasalergy", numDigits=1, timeout=15, method="GET")
 		return str(r)
 	def hasalergy(self, var=None, **params):
 		callerid = urllib.quote(cherrypy.request.params['From'])
@@ -302,7 +302,7 @@ class patient(object):
 		append(msisdn, 'alergy', alergy)
 		r = twiml.Response()
 		r.say("Thankyou, Press 1 to add another alergy, Press 2 to skip to the next section")
-		r.gather(action="/iceinfo/patient/morealergy", numDigits=1, method="GET")
+		r.gather(action="/iceinfo/patient/morealergy", numDigits=1, timeout=15, method="GET")
 		return str(r)
 	def morealergy(self, var=None, **params):
 		callerid = urllib.quote(cherrypy.request.params['From'])
@@ -320,7 +320,7 @@ class patient(object):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
 		r = twiml.Response()
 		r.say("Do you wish to record a next-of-kin or emergency contact? In the event of an emergency ICE Info may be used to contact the people you enter in this section so only include people who you would want to be contacted  Press 1 to add a contact, or Press 2 to skip to the next section")
-		r.gather(action="/iceinfo/patient/hasnok", numDigits=1, method="GET")
+		r.gather(action="/iceinfo/patient/hasnok", numDigits=1, timeout=15, method="GET")
 		return str(r)
 	def hasnok(self, var=None, **params):
 		callerid = urllib.quote(cherrypy.request.params['From'])
@@ -345,7 +345,7 @@ class patient(object):
 		RecordingUrl = urllib.quote(cherrypy.request.params['RecordingUrl'])
 		r = twiml.Response()
 		r.say("After the beep key in the phone number for your contact")
-		r.gather(action="/iceinfo/patient/addnoknum?name=" + RecordingUrl, numDigits=11, method="GET")
+		r.gather(action="/iceinfo/patient/addnoknum?name=" + RecordingUrl, numDigits=11, timeout=30, method="GET")
 		return str(r)
 	def addnoknum(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
@@ -357,7 +357,7 @@ class patient(object):
 		append(msisdn, 'nok', nok)
 		r = twiml.Response()
 		r.say("Thankyou, Press 1 to add another contact, Press 2 to skip to the next section")
-		r.gather(action="/iceinfo/patient/morenok", numDigits=1, method="GET")
+		r.gather(action="/iceinfo/patient/morenok", numDigits=1, timeout=15, method="GET")
 		return str(r)
 	def morenok(self, var=None, **params):
 		callerid = urllib.quote(cherrypy.request.params['From'])
@@ -416,7 +416,7 @@ class clinician(object):
 		r.say("Date of Birth") 
 		r.play(urllib.unquote(find(msisdn, 'dob')))
 		r.say("Press 1 to access the record or Press 2 to phone the patients next of kin")
-		r.gather(action="/iceinfo/clinician/menu", numDigits=1, method="GET")
+		r.gather(action="/iceinfo/clinician/menu", numDigits=1, timeout=15, method="GET")
 		return str(r)
 	def menu(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
@@ -453,7 +453,7 @@ class clinician(object):
 			r.say("Press 1 to replay this entry, Press 3 to move to the next section")
 		else:
 			r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section")
-		r.gather(action="/iceinfo/clinician/condmenu?item=" + str(item), numDigits=1, method="GET")
+		r.gather(action="/iceinfo/clinician/condmenu?item=" + str(item), timeout=15, numDigits=1, method="GET")
 		return str(r)
 	def condmenu(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
@@ -483,7 +483,7 @@ class clinician(object):
 			r.say("Press 1 to replay this entry, Press 3 to move to the next section")
 		else:
 			r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section")
-		r.gather(action="/iceinfo/clinician/drugmenu?item=" + str(item), numDigits=1, method="GET")
+		r.gather(action="/iceinfo/clinician/drugmenu?item=" + str(item), numDigits=1, timeout=15, method="GET")
 		return str(r)
 	def drugmenu(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
@@ -511,7 +511,7 @@ class clinician(object):
 			r.say("Press 1 to replay this entry, Press 3 to move to the next section")
 		else:
 			r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section")
-		r.gather(action="/iceinfo/clinician/alergymenu?item=" + str(item), numDigits=1, method="GET")
+		r.gather(action="/iceinfo/clinician/alergymenu?item=" + str(item), numDigits=1, timeout=15, method="GET")
 		return str(r)
 	def alergymenu(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
@@ -539,7 +539,7 @@ class clinician(object):
 			r.say("Press 1 to replay this entry, Press 4 to phone this contact, Press 5 to phone all contacts and speak to the first to answer.")
 		else:
 			r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section, Press 4 to phone this contact, Press 5 to phone all contacts and speak to the first to answer.")
-		r.gather(action="/iceinfo/clinician/nokmenu?item=" + str(item), numDigits=1, method="GET")
+		r.gather(action="/iceinfo/clinician/nokmenu?item=" + str(item), numDigits=1, timeout=15, method="GET")
 		return str(r)
 	def nokmenu(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
@@ -553,7 +553,7 @@ class clinician(object):
 			r.redirect("/iceinfo/clinician/playnok?item=" + str(item +1 ))
 		elif digit == "3":
 			r.say("You have reached the end of this entry. Press 1 to return to the beginning or hang up now.")
-			r.gather(action="/iceinfo/clinician/completemenu", numDigits=1, method="GET")
+			r.gather(action="/iceinfo/clinician/completemenu", numDigits=1, timeout=15, method="GET")
 		elif digit == "4":
 			noks = find(msisdn, 'nok')
 			num = noks[item]['number']
@@ -599,7 +599,7 @@ class start(object):
 		if registered(callerid):
 			r = twiml.Response()
 			r.say("Welcome to ICE Info, Press 1 if you are a clinician and need to access a record, Press 2 if you are a patient and need to listen to,  add or delete a record")
-			r.gather(action="/iceinfo/mainmenu", numDigits=1, method="GET")
+			r.gather(action="/iceinfo/mainmenu", numDigits=1, timeout=15, method="GET")
 		else:
 			r = twiml.Response()
 			r.say("Welcome to ICE Info, Each ICE record is linked to a mobile phone number.  Once you've set up a record it will only be able to be accessed from this mobile. You can choose how much to include or not include on your record and who you allow to use your mobile phone. If you lose your phone you will need to contact your phone company to disable your phone and if you change your phone number you will need to delete your record first.")
