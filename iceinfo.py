@@ -506,7 +506,7 @@ class clinician(object):
 		r = twiml.Response()
 		r.play(alergies[item]['name'])
 		r.play(alergies[item]['reaction'])
-		if find(msisdn, 'alergycount')) == item +1:
+		if find(msisdn, 'alergycount') == item +1:
 			r.say("end of alergy history")
 			r.say("Press 1 to replay this entry, Press 3 to move to the next section")
 		else:
