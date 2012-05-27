@@ -453,7 +453,7 @@ class clinician(object):
 			r.say("Press 1 to replay this entry, Press 3 to move to the next section")
 		else:
 			r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section")
-		r.gather(action="/iceinfo/clinician/condmenu?item=" + item, numDigits=1, method="GET")
+		r.gather(action="/iceinfo/clinician/condmenu?item=" + str(item), numDigits=1, method="GET")
 		return str(r)
 	def condmenu(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
@@ -483,7 +483,7 @@ class clinician(object):
 			r.say("Press 1 to replay this entry, Press 3 to move to the next section")
 		else:
 			r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section")
-		r.gather(action="/iceinfo/clinician/drugmenu?item=" + item, numDigits=1, method="GET")
+		r.gather(action="/iceinfo/clinician/drugmenu?item=" + str(item), numDigits=1, method="GET")
 		return str(r)
 	def drugmenu(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
@@ -511,7 +511,7 @@ class clinician(object):
 			r.say("Press 1 to replay this entry, Press 3 to move to the next section")
 		else:
 			r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section")
-		r.gather(action="/iceinfo/clinician/alergymenu?item=" + item, numDigits=1, method="GET")
+		r.gather(action="/iceinfo/clinician/alergymenu?item=" + str(item), numDigits=1, method="GET")
 		return str(r)
 	def alergymenu(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
@@ -539,7 +539,7 @@ class clinician(object):
 			r.say("Press 1 to replay this entry, Press 4 to phone this contact, Press 5 to phone all contacts and speak to the first to answer.")
 		else:
 			r.say("Press 1 to replay this entry, Press 2 to move to the next entry, Press 3 to move to the next section, Press 4 to phone this contact, Press 5 to phone all contacts and speak to the first to answer.")
-		r.gather(action="/iceinfo/clinician/nokmenu?item=" + item, numDigits=1, method="GET")
+		r.gather(action="/iceinfo/clinician/nokmenu?item=" + str(item), numDigits=1, method="GET")
 		return str(r)
 	def nokmenu(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
