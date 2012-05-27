@@ -432,8 +432,7 @@ class clinician(object):
 			noks = find(msisdn, 'nok')
 			d = twiml.Dial(callerId="02033224232")
 			for nok in noks:
-				num += nok['number']
-				n = twiml.Number(num)
+				n = twiml.Number(nok['number'])
 				d.append(n)
 			r.append(d)
 		return str(r)
@@ -586,8 +585,7 @@ class clinician(object):
 			noks = find(msisdn, 'nok')
 			d = twiml.Dial(callerId="02033224232")
 			for nok in noks:
-				num += nok['number']
-				n = twiml.Number(num)
+				n = twiml.Number(nok['number'])
 				d.append(n)
 			r.append(d)
 		return str(r)
