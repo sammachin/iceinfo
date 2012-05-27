@@ -420,7 +420,7 @@ class clinician(object):
 		return str(r)
 	def menu(self, var=None, **params):
 		msisdn = urllib.quote(cherrypy.request.params['From'])
-		digits = urllib.quote(cherrypy.request.params['digits'])
+		digits = urllib.quote(cherrypy.request.params['Digits'])
 		if digits == "1":
 			r = twiml.Response()
 			r.redirect("/iceinfo/clinician/history")
